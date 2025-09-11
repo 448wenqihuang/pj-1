@@ -1,0 +1,26 @@
+html, body {
+  height: 100%;
+  width: 100%;
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.logo {
+ width: 100px; 
+}
+
+ 
+.planet{
+  width: 50%;
+  background: #eee;
+  padding: 2em;
+  margin: 1em auto;
+  border-radius: 1em;
+}
+
+footer {
+  width: 50%;
+  font-size: 0.8rem; 
+  margin: auto;
+  padding: 3em;
+}

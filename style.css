@@ -3,24 +3,83 @@ html, body {
   width: 100%;
   font-family: sans-serif;
   text-align: center;
+  margin: 0;
+  padding: 0;
+  background: #121212; /* Spotify 黑色背景 */
+  color: #fff;
 }
 
-.logo {
- width: 100px; 
+/* 标题 */
+header {
+  background: #1db954; /* Spotify 绿色 */
+  padding: 1.5em;
+  color: white;
 }
 
- 
-.planet{
-  width: 50%;
-  background: #eee;
+h1 {
+  margin: 0;
+}
+
+/* 歌曲展示区域：网格布局 */
+#songs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
   padding: 2em;
-  margin: 1em auto;
-  border-radius: 1em;
 }
 
+/* 每个专辑卡片 */
+.album {
+  background: #181818;
+  border-radius: 12px;
+  padding: 1em;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.album:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+}
+
+.album img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.album h4 {
+  margin: 0.5em 0 0.3em;
+  font-size: 1.1rem;
+}
+
+.album p {
+  margin: 0.3em 0;
+  font-size: 0.9rem;
+  color: #b3b3b3;
+}
+
+/* Spotify 链接按钮 */
+.album a {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: #1db954;
+  color: white;
+  text-decoration: none;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+.album a:hover {
+  background: #1ed760;
+}
+
+/* 页脚 */
 footer {
-  width: 50%;
+  width: 100%;
   font-size: 0.8rem; 
-  margin: auto;
-  padding: 3em;
+  margin-top: 2em;
+  padding: 2em;
+  background: #181818;
+  color: #b3b3b3;
 }

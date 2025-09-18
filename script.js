@@ -1,35 +1,35 @@
-fetch('planets.json')
-.then(data => data.json() )   
-.then(json => {
+// ⚠️ 请替换成你在 Spotify Console 里拿到的临时 Token
+const token = "YOUR_SPOTIFY_ACCESS_TOKEN";
 
-  console.log(json)
-  
-  // sort an array of objects by comparing a nested temperature property
-  // let sorted = json.sort((a,b) => a.surfaceTemperatureC.mean - b.surfaceTemperatureC.mean ); 
-
-  // sort an array of objects by comparing sun order
-  let sorted = json.sort((a,b) =>  a.orderFromSun - b.orderFromSun  ); 
-
-
-  
-   sorted.forEach( planet => { 
-
-    // make a div to hold each planet
-    let div = document.createElement('div') 
-    div.classList.add('planet') 
-
-    // calculate colour dynamically based on temperature. 
-    const hue = (degrees) => ((464 - degrees) / 665 ) * 250 
-    let h = hue(planet.surfaceTemperatureC.mean) 
-    div.style.background = `hsl(${h}, 30%, 70%)`
-     
-    div.innerHTML = 
-      `<img width="100" src="assets/${planet.name}.svg">
-      <h4>${planet.name}</h4>
-      <p>${planet.surfaceTemperatureC.mean}&deg;C</p>`
-     
-     document.querySelector('#planets') .appendChild(div)
-  })
- 
+// 获取热门新歌
+fetch("https://api.spotify.com/v1/browse/new-releases?country=US&limit=10", {
+  headers: {
+    "Authorization": `Bearer ${token}`
+  }
 })
+  .then(res => res.json())
+  .then(json => {
+    console.log(json); // 可以在控制台里看到返回的完整数据
 
+    let albums = json.albums.items;
+
+    // 按照发布时间从新到旧排序
+    let sorted = albums.sort((a, b) => new Date(b.release_date) - new Date(a.release_date));
+
+    sorted.forEach(album => {
+      // 创建一个卡片
+      let div = document.createElement('div');
+      div.classList.add('album');
+
+      div.innerHTML = `
+        <img width="150" src="${album.images[0].url}" alt="${album.name}">
+        <h4>${album.name}</h4>
+        <p>${album.artists.map(a => a.name).join(", ")}</p>
+        <p>Release: ${album.release_date}</p>
+        <a href="${album.external_urls.spotify}" target="_blank">Listen on Spotify</a>
+      `;
+
+      document.querySelector('#songs').appendChild(div);
+    });
+  })
+  .catch(err => console.error("Error fetching Spotify API:", err));

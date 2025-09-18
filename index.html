@@ -1,19 +1,24 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>Planets</title>
+  <title>Hot Songs</title>
   <link href="style.css" rel="stylesheet" type="text/css" />
-  <script src="script.js"></script>
+  <!-- defer 保证在 HTML 加载完成后执行 JS -->
+  <script defer src="script.js"></script>
 </head>
 
 <body> 
   <header>
-    <h1>My Planets</h1>
+    <h1>🔥 Spotify Hot Songs</h1>
   </header>
-  <section id="planets"></section>
-  <footer>Icons via <a href="https://stock.adobe.com/ca/">Adobe</a></footer>
+  
+  <!-- 歌曲卡片会插入到这里 -->
+  <section id="songs"></section>
+  
+  <footer>
+    Data via <a href="https://developer.spotify.com/" target="_blank">Spotify API</a>
+  </footer>
 </body>
 </html>

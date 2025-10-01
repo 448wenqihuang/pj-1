@@ -1,85 +1,249 @@
-html, body {
-  height: 100%;
+﻿html, body {
+  /* CHANGE: Updated layout base and background for Last.fm look */
+  min-height: 100%;
   width: 100%;
-  font-family: sans-serif;
-  text-align: center;
   margin: 0;
   padding: 0;
-  background: #121212; /* Spotify 黑色背景 */
-  color: #fff;
+  font-family: "Segoe UI", sans-serif;
+  text-align: center;
+  background: radial-gradient(circle at top, #2b1b1b, #0f0f0f 65%);
+  color: #f7f7f7;
 }
 
-/* 标题 */
+body {
+  /* CHANGE: Ensure content centers within view */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
 header {
-  background: #1db954; /* Spotify 绿色 */
-  padding: 1.5em;
-  color: white;
+  /* CHANGE: Last.fm inspired crimson header */
+  background: #c1052c;
+  padding: 2.5em 1.5em 2em;
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
 }
 
-h1 {
-  margin: 0;
+header h1 {
+  /* CHANGE: Tighten heading spacing */
+  margin: 0 0 0.4em;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
 }
 
-/* 歌曲展示区域：网格布局 */
-#songs {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
-  padding: 2em;
+.tagline {
+  /* CHANGE: Subheading to support hero text */
+  margin: 0 auto 1.4em;
+  max-width: 32rem;
+  color: rgba(255, 255, 255, 0.85);
 }
 
-/* 每个专辑卡片 */
-.album {
-  background: #181818;
-  border-radius: 12px;
-  padding: 1em;
+#tag-form {
+  /* CHANGE: Inline form for tag search */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6em;
+}
+
+#tag-form label {
+  /* CHANGE: Keep label readable on dark background */
+  align-self: center;
+  font-weight: 600;
+}
+
+#tag-form input {
+  /* CHANGE: Styled input for tag entry */
+  min-width: 14rem;
+  padding: 0.6em 0.9em;
+  border-radius: 999px;
+  border: none;
+  font-size: 1rem;
+  background: rgba(0, 0, 0, 0.25);
+  color: #fff;
+  outline: 2px solid transparent;
+  transition: outline-color 0.2s ease, background 0.2s ease;
+}
+
+#tag-form input:focus {
+  /* CHANGE: Provide visible focus state */
+  background: rgba(0, 0, 0, 0.4);
+  outline-color: #ffd54f;
+}
+
+#tag-form button {
+  /* CHANGE: Primary action button */
+  padding: 0.6em 1.4em;
+  border-radius: 999px;
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  background: #ffd54f;
+  color: #1b1b1b;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.album:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+#tag-form button:hover,
+#tag-form button:focus {
+  /* CHANGE: Button hover and focus feedback */
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(255, 213, 79, 0.35);
 }
 
-.album img {
+main {
+  /* CHANGE: Center content area */
+  flex: 1;
+  width: min(1100px, 90vw);
+  margin: 0 auto;
+  padding: 2em 0 3em;
+}
+
+#songs {
+  /* CHANGE: Responsive grid for track cards */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.status-message {
+  /* CHANGE: Styling for loading/error messages */
+  grid-column: 1 / -1;
+  margin: 0 auto;
+  padding: 1em 1.5em;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.status-message.loading {
+  /* CHANGE: Highlight loading state */
+  border: 1px solid rgba(255, 213, 79, 0.6);
+}
+
+.status-message.error {
+  /* CHANGE: Highlight error state */
+  border: 1px solid rgba(255, 88, 120, 0.6);
+}
+
+.track-card {
+  /* CHANGE: Card style for each track */
+  display: flex;
+  flex-direction: column;
+  gap: 0.9em;
+  padding: 1.2em;
+  background: rgba(24, 24, 24, 0.85);
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.track-card:hover {
+  /* CHANGE: Hover feedback */
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45);
+}
+
+.track-card img {
+  /* CHANGE: Responsive album art */
   width: 100%;
-  border-radius: 8px;
-  margin-bottom: 10px;
+  border-radius: 12px;
 }
 
-.album h4 {
-  margin: 0.5em 0 0.3em;
+.track-placeholder {
+  /* CHANGE: Placeholder when no image is available */
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+}
+
+.track-info {
+  /* CHANGE: Stack track metadata */
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+  text-align: left;
+}
+
+.track-info h3 {
+  /* CHANGE: Track title styling */
+  margin: 0;
   font-size: 1.1rem;
 }
 
-.album p {
-  margin: 0.3em 0;
-  font-size: 0.9rem;
-  color: #b3b3b3;
+.track-info .artist {
+  /* CHANGE: Artist text accent */
+  margin: 0;
+  color: rgba(255, 255, 255, 0.7);
 }
 
-/* Spotify 链接按钮 */
-.album a {
-  display: inline-block;
-  margin-top: 8px;
-  padding: 6px 12px;
-  background: #1db954;
-  color: white;
+.track-metrics {
+  /* CHANGE: Display listener/scrobble metrics */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  margin: 0.2em 0 0.6em;
+}
+
+.metric {
+  /* CHANGE: Stack metric label and value */
+  display: flex;
+  flex-direction: column;
+  min-width: 5.5rem;
+}
+
+.metric-label {
+  /* CHANGE: Subtle uppercase label */
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.metric-value {
+  /* CHANGE: Bold metric value */
+  font-weight: 700;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.track-info a {
+  /* CHANGE: Link styled as subtle button */
+  align-self: flex-start;
+  padding: 0.5em 1.1em;
+  border-radius: 999px;
+  background: rgba(255, 213, 79, 0.9);
+  color: #1b1b1b;
   text-decoration: none;
-  border-radius: 20px;
-  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background 0.2s ease;
 }
 
-.album a:hover {
-  background: #1ed760;
+.track-info a:hover,
+.track-info a:focus {
+  /* CHANGE: Link hover effect */
+  background: rgba(255, 213, 79, 1);
 }
 
-/* 页脚 */
 footer {
-  width: 100%;
-  font-size: 0.8rem; 
-  margin-top: 2em;
-  padding: 2em;
-  background: #181818;
-  color: #b3b3b3;
+  /* CHANGE: Footer matches dark theme */
+  font-size: 0.85rem;
+  padding: 2em 1em 3em;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+footer a {
+  /* CHANGE: Footer link color */
+  color: #ffd54f;
 }

@@ -1,24 +1,30 @@
-<!DOCTYPE html>
-<html>
+﻿<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>Hot Songs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Last.fm Top Tracks Explorer</title> <!-- CHANGE: Update page title for Last.fm -->
   <link href="style.css" rel="stylesheet" type="text/css" />
-  <!-- defer 保证在 HTML 加载完成后执行 JS -->
   <script defer src="script.js"></script>
 </head>
 
-<body> 
+<body>
   <header>
-    <h1>🔥 Spotify Hot Songs</h1>
+    <h1>🎧 Last.fm Top Tracks Explorer</h1> <!-- CHANGE: Replace Spotify heading -->
+    <p class="tagline">Discover what the world is listening to right now.</p> <!-- CHANGE: Add supporting tagline -->
+    <form id="tag-form"> <!-- CHANGE: Add tag search form -->
+      <label for="tag-input">Music tag</label>
+      <input id="tag-input" type="text" name="tag" aria-label="music tag" placeholder="e.g. pop, indie, hip-hop" value="pop" required>
+      <button type="submit">Load tracks</button>
+    </form>
   </header>
-  
-  <!-- 歌曲卡片会插入到这里 -->
-  <section id="songs"></section>
+
+  <main>
+    <section id="songs" aria-live="polite"></section> <!-- CHANGE: Main content container for tracks -->
+  </main>
   
   <footer>
-    Data via <a href="https://developer.spotify.com/" target="_blank">Spotify API</a>
+    Data via <a href="https://www.last.fm/api" target="_blank" rel="noopener">Last.fm API</a> <!-- CHANGE: Reference Last.fm data source -->
   </footer>
 </body>
 </html>

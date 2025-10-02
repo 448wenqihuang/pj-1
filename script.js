@@ -5,6 +5,11 @@ const API_URL = "https://ws.audioscrobbler.com/2.0/"; // CHANGE: Base endpoint f
 const form = document.querySelector('#tag-form');
 const tagInput = document.querySelector('#tag-input');
 const songsSection = document.querySelector('#songs');
+const topArtistSection = document.querySelector('#top-artist'); // CHANGE: Sidebar top artist container
+const artistTracksSection = document.querySelector('#artist-tracks'); // CHANGE: Wrapper for artist tracks
+const topTracksList = document.querySelector('#top-tracks'); // CHANGE: Ordered list for artist top tracks
+const artistTracksHeading = artistTracksSection ? artistTracksSection.querySelector('h2') : null; // CHANGE: Heading for artist tracks
+
 
 // CHANGE: Pick the largest available image URL from a Last.fm image array
 function pickImage(imageList) {
@@ -98,6 +103,210 @@ function renderTracks(tracks = []) {
     card.appendChild(info);
     songsSection.appendChild(card);
   });
+}
+
+function renderTrendingStatus(message, type = 'info') {
+  if (!topArtistSection) return;
+  topArtistSection.innerHTML = '';
+  const status = document.createElement('p');
+  status.className = `status-message ${type}`;
+  status.textContent = message;
+  topArtistSection.appendChild(status);
+}
+
+function renderTopTracksStatus(message, type = 'info') {
+  if (!topTracksList) return;
+  topTracksList.innerHTML = '';
+  const statusItem = document.createElement('li');
+  statusItem.className = `track-status ${type}`;
+  statusItem.textContent = message;
+  topTracksList.appendChild(statusItem);
+}
+
+function renderTopArtistCard(artist) {
+  if (!topArtistSection) return;
+  topArtistSection.innerHTML = '';
+
+  const card = document.createElement('article');
+  card.className = 'artist-card';
+
+  const imageUrl = pickImage(artist.image);
+
+  if (imageUrl) {
+    const img = document.createElement('img');
+    img.src = imageUrl;
+    img.alt = `${artist.name} portrait`;
+    img.loading = 'lazy';
+    card.appendChild(img);
+  } else {
+    const placeholder = document.createElement('div');
+    placeholder.className = 'artist-placeholder';
+    placeholder.setAttribute('aria-hidden', 'true');
+    placeholder.textContent = 'No image';
+    card.appendChild(placeholder);
+  }
+
+  const info = document.createElement('div');
+  info.className = 'artist-info';
+
+  const title = document.createElement('h2');
+  title.textContent = artist.name || 'Top Artist';
+
+  const stats = document.createElement('div');
+  stats.className = 'artist-stats';
+  stats.innerHTML = `
+    <div class="metric">
+      <span class="metric-label">Listeners</span>
+      <span class="metric-value">${formatCount(artist.listeners)}</span>
+    </div>
+    <div class="metric">
+      <span class="metric-label">Scrobbles</span>
+      <span class="metric-value">${formatCount(artist.playcount)}</span>
+    </div>
+  `;
+
+  const link = document.createElement('a');
+  link.href = artist.url || '#';
+  link.target = '_blank';
+  link.rel = 'noopener';
+  link.textContent = 'View artist on Last.fm';
+
+  info.append(title, stats, link);
+  card.appendChild(info);
+  topArtistSection.appendChild(card);
+
+  if (artistTracksHeading) {
+    artistTracksHeading.textContent = `Top Tracks - ${artist.name}`;
+  }
+}
+
+function renderArtistTopTracks(tracks = []) {
+  if (!topTracksList) return;
+  topTracksList.innerHTML = '';
+
+  tracks.forEach((track, index) => {
+    const item = document.createElement('li');
+    item.className = 'artist-track';
+
+    const rank = document.createElement('span');
+    rank.className = 'rank';
+    rank.textContent = String(index + 1).padStart(2, '0');
+
+    const meta = document.createElement('div');
+    meta.className = 'artist-track-meta';
+
+    const name = document.createElement('p');
+    name.className = 'track-title';
+    name.textContent = track.name || 'Untitled';
+
+    const stats = document.createElement('p');
+    stats.className = 'track-stats';
+    const listeners = formatCount(track.listeners);
+    const scrobbles = formatCount(track.playcount);
+    stats.textContent = `${listeners} listeners - ${scrobbles} scrobbles`;
+
+    const link = document.createElement('a');
+    link.href = track.url || '#';
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.textContent = 'Open on Last.fm';
+
+    meta.append(name, stats, link);
+    item.append(rank, meta);
+    topTracksList.appendChild(item);
+  });
+}
+
+async function fetchTrendingArtist() {
+  if (!topArtistSection) return;
+
+  renderTrendingStatus("Loading today's hottest artist...", 'loading');
+  if (topTracksList) {
+    topTracksList.innerHTML = '';
+  }
+  if (artistTracksHeading) {
+    artistTracksHeading.textContent = 'Top Tracks';
+  }
+
+  try {
+    const params = new URLSearchParams({
+      method: 'chart.gettopartists',
+      limit: '1',
+      api_key: API_KEY,
+      format: 'json',
+    });
+
+    const response = await fetch(`${API_URL}?${params.toString()}`);
+    if (!response.ok) {
+      throw new Error(`Network error: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (data.error) {
+      throw new Error(data.message || 'Last.fm returned an error.');
+    }
+
+    const artists = data.artists?.artist;
+    const artist = Array.isArray(artists) ? artists[0] : artists;
+
+    if (!artist) {
+      renderTrendingStatus('No trending artist data available.', 'error');
+      renderTopTracksStatus('No track data available.', 'error');
+      return;
+    }
+
+    renderTopArtistCard(artist);
+    await fetchArtistTopTracks(artist.name);
+  } catch (error) {
+    console.error('Error fetching Last.fm top artist:', error);
+    renderTrendingStatus('Unable to load trending artist right now.', 'error');
+    renderTopTracksStatus('Unable to load top tracks.', 'error');
+  }
+}
+
+async function fetchArtistTopTracks(artistName) {
+  if (!topTracksList) return;
+
+  if (!artistName) {
+    renderTopTracksStatus('No artist selected.', 'error');
+    return;
+  }
+
+  renderTopTracksStatus(`Loading ${artistName}'s top tracks...`, 'loading');
+
+  try {
+    const params = new URLSearchParams({
+      method: 'artist.gettoptracks',
+      artist: artistName,
+      limit: '10',
+      api_key: API_KEY,
+      format: 'json',
+    });
+
+    const response = await fetch(`${API_URL}?${params.toString()}`);
+    if (!response.ok) {
+      throw new Error(`Network error: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (data.error) {
+      throw new Error(data.message || 'Last.fm returned an error.');
+    }
+
+    const tracks = data.toptracks?.track;
+
+    if (!Array.isArray(tracks) || tracks.length === 0) {
+      renderTopTracksStatus('No top tracks found for this artist.', 'error');
+      return;
+    }
+
+    renderArtistTopTracks(tracks.slice(0, 10));
+  } catch (error) {
+    console.error('Error fetching artist top tracks:', error);
+    renderTopTracksStatus('Unable to load top tracks.', 'error');
+  }
 }
 
 // CHANGE: Fetch detailed stats for a track (listeners & scrobbles)
@@ -220,3 +429,6 @@ if (form && tagInput) {
 } else {
   console.warn('Tag form elements were not found in the DOM.');
 }
+
+// CHANGE: Load global trending artist and their top tracks on startup
+fetchTrendingArtist();

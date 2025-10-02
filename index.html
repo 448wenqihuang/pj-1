@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -10,7 +10,7 @@
 
 <body>
   <header>
-    <h1>🎧 Last.fm Top Tracks Explorer</h1> <!-- CHANGE: Replace Spotify heading -->
+    <h1>Last.fm Top Tracks Explorer</h1> <!-- CHANGE: Replace Spotify heading -->
     <p class="tagline">Discover what the world is listening to right now.</p> <!-- CHANGE: Add supporting tagline -->
     <form id="tag-form"> <!-- CHANGE: Add tag search form -->
       <label for="tag-input">Music tag</label>
@@ -19,8 +19,16 @@
     </form>
   </header>
 
-  <main>
-    <section id="songs" aria-live="polite"></section> <!-- CHANGE: Main content container for tracks -->
+  <main class="layout"> <!-- CHANGE: Introduce two-column layout -->
+    <aside id="trending" aria-label="Trending artist"> <!-- CHANGE: Sidebar for top artist -->
+      <section id="top-artist" aria-live="polite"></section> <!-- CHANGE: Placeholder for hottest artist -->
+      <section id="artist-tracks"> <!-- CHANGE: Top tracks list for the top artist -->
+        <h2>Top Tracks</h2>
+        <ol id="top-tracks" class="track-list" aria-live="polite"></ol>
+      </section>
+    </aside>
+
+    <section id="songs" aria-live="polite"></section> <!-- CHANGE: Main content container for tag tracks -->
   </main>
   
   <footer>

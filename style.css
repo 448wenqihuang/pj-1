@@ -99,6 +99,48 @@ main {
   padding: 2em 0 3em;
 }
 
+main.layout {
+  /* CHANGE: Two-column layout for sidebar + results */
+  display: grid;
+  grid-template-columns: minmax(260px, 320px) 1fr;
+  gap: 2.5em;
+  align-items: flex-start;
+}
+
+#trending {
+  /* CHANGE: Sidebar container */
+  display: flex;
+  flex-direction: column;
+  gap: 1.4em;
+}
+
+#artist-tracks {
+  /* CHANGE: Wrapper for artist top tracks */
+  background: rgba(24, 24, 24, 0.85);
+  border-radius: 16px;
+  padding: 1.3em 1.4em;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+  text-align: left;
+}
+
+#artist-tracks h2 {
+  /* CHANGE: Heading for sidebar track list */
+  margin: 0 0 0.8em;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 960px) {
+  main.layout {
+    grid-template-columns: 1fr;
+    gap: 1.8em;
+  }
+
+  #trending {
+    order: -1;
+  }
+}
+
 #songs {
   /* CHANGE: Responsive grid for track cards */
   display: grid;
@@ -166,6 +208,167 @@ main {
   color: rgba(255, 255, 255, 0.55);
   background: rgba(255, 255, 255, 0.08);
   border: 1px dashed rgba(255, 255, 255, 0.15);
+}
+
+.artist-card {
+  /* CHANGE: Display top artist information */
+  display: flex;
+  flex-direction: column;
+  gap: 1.1em;
+  padding: 1.3em;
+  background: rgba(24, 24, 24, 0.85);
+  border-radius: 16px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+  text-align: left;
+}
+
+.artist-card img {
+  /* CHANGE: Artist artwork */
+  width: 100%;
+  border-radius: 12px;
+}
+
+.artist-placeholder {
+  /* CHANGE: Placeholder when artist has no image */
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+}
+
+.artist-info {
+  /* CHANGE: Stack artist details */
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+}
+
+.artist-info h2 {
+  /* CHANGE: Artist name styling */
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.artist-stats {
+  /* CHANGE: Layout for artist metrics */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+
+.artist-info a {
+  /* CHANGE: Artist profile link */
+  align-self: flex-start;
+  padding: 0.4em 1em;
+  border-radius: 999px;
+  background: rgba(255, 213, 79, 0.85);
+  color: #1b1b1b;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.artist-info a:hover,
+.artist-info a:focus {
+  background: rgba(255, 213, 79, 1);
+  transform: translateY(-1px);
+}
+
+.track-list {
+  /* CHANGE: Ordered list for artist tracks */
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+}
+
+.artist-track {
+  /* CHANGE: Individual track row */
+  display: flex;
+  gap: 0.8em;
+  align-items: flex-start;
+  padding: 0.65em 0.85em;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.artist-track:hover {
+  background: rgba(0, 0, 0, 0.35);
+  transform: translateY(-2px);
+}
+
+.artist-track .rank {
+  /* CHANGE: Track rank badge */
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.7);
+  min-width: 2.2em;
+}
+
+.artist-track-meta {
+  /* CHANGE: Metadata stack */
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+}
+
+.artist-track-meta .track-title {
+  /* CHANGE: Track name */
+  margin: 0;
+  font-weight: 600;
+  color: #fff;
+}
+
+.artist-track-meta .track-stats {
+  /* CHANGE: Track stats text */
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.artist-track-meta a {
+  /* CHANGE: Link to Last.fm track */
+  align-self: flex-start;
+  font-size: 0.85rem;
+  color: #ffd54f;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.artist-track-meta a:hover,
+.artist-track-meta a:focus {
+  color: #ffe27a;
+}
+
+.track-status {
+  /* CHANGE: Status message styling within track list */
+  list-style: none;
+  padding: 0.8em 1em;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.track-status.loading {
+  border: 1px solid rgba(255, 213, 79, 0.6);
+}
+
+.track-status.error {
+  border: 1px solid rgba(255, 88, 120, 0.6);
+  color: rgba(255, 170, 190, 0.85);
 }
 
 .track-info {

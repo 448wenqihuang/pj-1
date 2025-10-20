@@ -1,139 +1,157 @@
-﻿html, body {
-  /* CHANGE: Updated layout base and background for Last.fm look */
-  min-height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  font-family: "Segoe UI", sans-serif;
-  text-align: center;
-  background: radial-gradient(circle at top, #2b1b1b, #0f0f0f 65%);
-  color: #f7f7f7;
+:root {
+  --bg: #0e0a13;
+  --bg-elevated: #1a1322;
+  --bg-panel: #22172f;
+  --bg-soft: #2b1a3a;
+  --primary: #d2153b;
+  --primary-dark: #a20f2d;
+  --accent: #ffd54f;
+  --accent-dark: #fbc02d;
+  --text: #f9f7ff;
+  --text-muted: #cfc3e2;
+  --border: rgba(255, 255, 255, 0.08);
+  --radius-lg: 22px;
+  --radius-md: 16px;
+  --radius-sm: 10px;
+  --shadow-soft: 0 28px 60px rgba(6, 2, 14, 0.45);
+  --shadow-card: 0 18px 32px rgba(8, 3, 18, 0.35);
+  --font-base: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
 }
 
-body {
-  /* CHANGE: Ensure content centers within view */
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  font-family: var(--font-base);
+  background: radial-gradient(circle at 20% 20%, #201329, #0b0613 68%);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover,
+a:focus {
+  color: var(--accent-dark);
 }
 
 header {
-  /* CHANGE: Last.fm inspired crimson header */
-  background: #c1052c;
-  padding: 2.5em 1.5em 2em;
-  color: #fff;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  background: linear-gradient(150deg, var(--primary) 0%, var(--primary-dark) 85%);
+  color: var(--text);
+  padding: 3.5rem 1.5rem 4.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.15), transparent 52%),
+              radial-gradient(circle at 85% 25%, rgba(255, 213, 79, 0.18), transparent 55%);
+  opacity: 0.5;
+}
+
+.header-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
 }
 
 header h1 {
-  /* CHANGE: Tighten heading spacing */
-  margin: 0 0 0.4em;
-  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3rem);
+  letter-spacing: 0.04em;
 }
 
 .tagline {
-  /* CHANGE: Subheading to support hero text */
-  margin: 0 auto 1.4em;
-  max-width: 32rem;
-  color: rgba(255, 255, 255, 0.85);
+  margin: 0 auto;
+  max-width: 38rem;
+  font-size: 1.05rem;
+  color: rgba(249, 247, 255, 0.82);
 }
 
 #tag-form {
-  /* CHANGE: Inline form for tag search */
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.6em;
+  gap: 0.8rem;
+  margin-top: 0.4rem;
 }
 
 #tag-form label {
-  /* CHANGE: Keep label readable on dark background */
   align-self: center;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.72);
 }
 
 #tag-form input {
-  /* CHANGE: Styled input for tag entry */
-  min-width: 14rem;
-  padding: 0.6em 0.9em;
+  min-width: 16rem;
+  padding: 0.7rem 1.1rem;
   border-radius: 999px;
   border: none;
-  font-size: 1rem;
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(0, 0, 0, 0.28);
   color: #fff;
-  outline: 2px solid transparent;
-  transition: outline-color 0.2s ease, background 0.2s ease;
+  font-size: 1rem;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  transition: box-shadow 0.2s ease, background 0.2s ease;
 }
 
 #tag-form input:focus {
-  /* CHANGE: Provide visible focus state */
-  background: rgba(0, 0, 0, 0.4);
-  outline-color: #ffd54f;
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--accent);
+  background: rgba(0, 0, 0, 0.35);
 }
 
 #tag-form button {
-  /* CHANGE: Primary action button */
-  padding: 0.6em 1.4em;
+  padding: 0.7rem 1.6rem;
   border-radius: 999px;
   border: none;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1rem;
   cursor: pointer;
-  background: #ffd54f;
-  color: #1b1b1b;
+  background: var(--accent);
+  color: #261210;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 #tag-form button:hover,
 #tag-form button:focus {
-  /* CHANGE: Button hover and focus feedback */
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(255, 213, 79, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(255, 213, 79, 0.35);
 }
 
-main {
-  /* CHANGE: Center content area */
-  flex: 1;
-  width: min(1100px, 90vw);
-  margin: 0 auto;
-  padding: 2em 0 3em;
+.main-container {
+  max-width: 1180px;
+  margin: -2.4rem auto 4rem;
+  padding: 0 1.5rem;
+  position: relative;
 }
 
-main.layout {
-  /* CHANGE: Two-column layout for sidebar + results */
+.content-grid {
   display: grid;
   grid-template-columns: minmax(260px, 320px) 1fr;
-  gap: 2.5em;
+  gap: 2.4rem;
   align-items: flex-start;
 }
 
-#trending {
-  /* CHANGE: Sidebar container */
-  display: flex;
-  flex-direction: column;
-  gap: 1.4em;
-}
-
-#artist-tracks {
-  /* CHANGE: Wrapper for artist top tracks */
-  background: rgba(24, 24, 24, 0.85);
-  border-radius: 16px;
-  padding: 1.3em 1.4em;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
-  text-align: left;
-}
-
-#artist-tracks h2 {
-  /* CHANGE: Heading for sidebar track list */
-  margin: 0 0 0.8em;
-  font-size: 1.05rem;
-  letter-spacing: 0.02em;
-}
-
-@media (max-width: 960px) {
-  main.layout {
+@media (max-width: 1024px) {
+  .content-grid {
     grid-template-columns: 1fr;
-    gap: 1.8em;
   }
 
   #trending {
@@ -141,312 +159,319 @@ main.layout {
   }
 }
 
-#songs {
-  /* CHANGE: Responsive grid for track cards */
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5em;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.status-message {
-  /* CHANGE: Styling for loading/error messages */
-  grid-column: 1 / -1;
-  margin: 0 auto;
-  padding: 1em 1.5em;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.4);
-}
-
-.status-message.loading {
-  /* CHANGE: Highlight loading state */
-  border: 1px solid rgba(255, 213, 79, 0.6);
-}
-
-.status-message.error {
-  /* CHANGE: Highlight error state */
-  border: 1px solid rgba(255, 88, 120, 0.6);
-}
-
-.track-card {
-  /* CHANGE: Card style for each track */
+#trending {
   display: flex;
   flex-direction: column;
-  gap: 0.9em;
-  padding: 1.2em;
-  background: rgba(24, 24, 24, 0.85);
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  gap: 1.6rem;
+  position: sticky;
+  top: 7rem;
+}
+
+.results-panel {
+  background: var(--bg-panel);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 2.2rem 2.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  min-height: 560px;
+}
+
+.results-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.results-header h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  letter-spacing: 0.03em;
+}
+
+.results-header p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+#songs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.track-card,
+.skeleton-card {
+  background: var(--bg-elevated);
+  border-radius: var(--radius-md);
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  box-shadow: var(--shadow-card);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .track-card:hover {
-  /* CHANGE: Hover feedback */
   transform: translateY(-6px);
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 24px 40px rgba(8, 3, 18, 0.45);
 }
 
-.track-card img {
-  /* CHANGE: Responsive album art */
-  width: 100%;
-  border-radius: 12px;
-}
-
-.track-placeholder {
-  /* CHANGE: Placeholder when no image is available */
-  display: grid;
-  place-items: center;
+.track-card img,
+.skeleton-thumb {
   width: 100%;
   aspect-ratio: 1 / 1;
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px dashed rgba(255, 255, 255, 0.15);
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.05);
 }
 
-.artist-card {
-  /* CHANGE: Display top artist information */
+.track-info {
   display: flex;
   flex-direction: column;
-  gap: 1.1em;
-  padding: 1.3em;
-  background: rgba(24, 24, 24, 0.85);
-  border-radius: 16px;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
-  text-align: left;
+  gap: 0.65rem;
+}
+
+.track-info h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.track-info .artist {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.track-metrics {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.metric-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.track-info a {
+  align-self: flex-start;
+  padding: 0.55rem 1.2rem;
+  border-radius: 999px;
+  background: rgba(255, 213, 79, 0.92);
+  color: #261210;
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+.status-message,
+.track-status {
+  padding: 0.9rem 1.2rem;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+}
+
+.status-message.error,
+.track-status.error {
+  border-color: rgba(255, 94, 118, 0.5);
+  color: #ffb3c1;
+}
+
+.artist-card,
+#artist-tracks {
+  background: var(--bg-elevated);
+  border-radius: var(--radius-lg);
+  padding: 1.6rem;
+  box-shadow: var(--shadow-card);
 }
 
 .artist-card img {
-  /* CHANGE: Artist artwork */
-  width: 100%;
-  border-radius: 12px;
-}
-
-.artist-placeholder {
-  /* CHANGE: Placeholder when artist has no image */
-  display: grid;
-  place-items: center;
   width: 100%;
   aspect-ratio: 1 / 1;
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px dashed rgba(255, 255, 255, 0.15);
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.05);
 }
 
-.artist-info {
-  /* CHANGE: Stack artist details */
-  display: flex;
-  flex-direction: column;
-  gap: 0.6em;
-}
-
-.artist-info h2 {
-  /* CHANGE: Artist name styling */
-  margin: 0;
-  font-size: 1.35rem;
-}
-
-.artist-stats {
-  /* CHANGE: Layout for artist metrics */
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1em;
+.artist-placeholder,
+.skeleton-artist .skeleton-thumb {
+  border-radius: var(--radius-sm);
 }
 
 .artist-info a {
-  /* CHANGE: Artist profile link */
   align-self: flex-start;
-  padding: 0.4em 1em;
+  padding: 0.5rem 1.1rem;
   border-radius: 999px;
-  background: rgba(255, 213, 79, 0.85);
-  color: #1b1b1b;
+  background: rgba(255, 213, 79, 0.92);
+  color: #261210;
   font-weight: 600;
-  font-size: 0.9rem;
-  text-decoration: none;
-  transition: background 0.2s ease, transform 0.2s ease;
+  font-size: 0.85rem;
 }
 
-.artist-info a:hover,
-.artist-info a:focus {
-  background: rgba(255, 213, 79, 1);
-  transform: translateY(-1px);
+.artist-stats {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .track-list {
-  /* CHANGE: Ordered list for artist tracks */
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
   margin: 0;
   padding: 0;
   list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75em;
 }
 
 .artist-track {
-  /* CHANGE: Individual track row */
+  background: rgba(0, 0, 0, 0.28);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
   display: flex;
-  gap: 0.8em;
+  gap: 0.9rem;
   align-items: flex-start;
-  padding: 0.65em 0.85em;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.25);
   transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .artist-track:hover {
-  background: rgba(0, 0, 0, 0.35);
-  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-3px);
 }
 
 .artist-track .rank {
-  /* CHANGE: Track rank badge */
   font-weight: 700;
   font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.7);
-  min-width: 2.2em;
+  color: var(--text-muted);
+  min-width: 2.5ch;
 }
 
 .artist-track-meta {
-  /* CHANGE: Metadata stack */
   display: flex;
   flex-direction: column;
-  gap: 0.25em;
+  gap: 0.3rem;
 }
 
 .artist-track-meta .track-title {
-  /* CHANGE: Track name */
   margin: 0;
   font-weight: 600;
-  color: #fff;
 }
 
 .artist-track-meta .track-stats {
-  /* CHANGE: Track stats text */
   margin: 0;
+  color: var(--text-muted);
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.6);
 }
 
 .artist-track-meta a {
-  /* CHANGE: Link to Last.fm track */
-  align-self: flex-start;
   font-size: 0.85rem;
-  color: #ffd54f;
-  text-decoration: none;
-  transition: color 0.2s ease;
+  color: var(--accent);
 }
 
-.artist-track-meta a:hover,
-.artist-track-meta a:focus {
-  color: #ffe27a;
+.fade-in {
+  opacity: 0;
+  transform: translateY(6px);
+  animation: fadeIn 200ms ease forwards;
 }
 
-.track-status {
-  /* CHANGE: Status message styling within track list */
-  list-style: none;
-  padding: 0.8em 1em;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.3);
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.75);
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-.track-status.loading {
-  border: 1px solid rgba(255, 213, 79, 0.6);
+.skeleton-card,
+.skeleton-artist,
+.artist-track.skeleton-row {
+  position: relative;
+  overflow: hidden;
 }
 
-.track-status.error {
-  border: 1px solid rgba(255, 88, 120, 0.6);
-  color: rgba(255, 170, 190, 0.85);
+.skeleton-line,
+.skeleton-thumb,
+.skeleton-badge {
+  background: linear-gradient(90deg, rgba(255,255,255,0.08), rgba(255,255,255,0.2), rgba(255,255,255,0.08));
+  background-size: 200% 100%;
+  animation: skeletonPulse 1.2s ease-in-out infinite;
 }
 
-.track-info {
-  /* CHANGE: Stack track metadata */
-  display: flex;
-  flex-direction: column;
-  gap: 0.35em;
-  text-align: left;
+.skeleton-card .skeleton-thumb {
+  aspect-ratio: 1 / 1;
 }
 
-.track-info h3 {
-  /* CHANGE: Track title styling */
-  margin: 0;
-  font-size: 1.1rem;
+.skeleton-artist .skeleton-thumb.tall {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-sm);
 }
 
-.track-info .artist {
-  /* CHANGE: Artist text accent */
-  margin: 0;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.track-metrics {
-  /* CHANGE: Display listener/scrobble metrics */
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1em;
-  margin: 0.2em 0 0.6em;
-}
-
-.metric {
-  /* CHANGE: Stack metric label and value */
-  display: flex;
-  flex-direction: column;
-  min-width: 5.5rem;
-}
-
-.metric-label {
-  /* CHANGE: Subtle uppercase label */
-  font-size: 0.72rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
-}
-
-.metric-value {
-  /* CHANGE: Bold metric value */
-  font-weight: 700;
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.95);
-}
-
-.track-info a {
-  /* CHANGE: Link styled as subtle button */
-  align-self: flex-start;
-  padding: 0.5em 1.1em;
+.skeleton-line {
+  height: 12px;
+  width: 60%;
   border-radius: 999px;
-  background: rgba(255, 213, 79, 0.9);
-  color: #1b1b1b;
-  text-decoration: none;
-  font-weight: 600;
-  transition: background 0.2s ease;
 }
 
-.track-info a:hover,
-.track-info a:focus {
-  /* CHANGE: Link hover effect */
-  background: rgba(255, 213, 79, 1);
+.skeleton-line.wide { width: 80%; }
+.skeleton-line.short { width: 38%; }
+
+.skeleton-badge {
+  display: inline-block;
+  width: 2.3em;
+  height: 1.2em;
+  border-radius: 999px;
+}
+
+.artist-track.skeleton-row .artist-track-meta {
+  gap: 0.35rem;
+}
+
+.artist-track.skeleton-row .rank {
+  font-size: 0;
+  min-width: 2.3em;
+}
+
+@keyframes skeletonPulse {
+  0% {
+    background-position: 200% 0;
+    opacity: 0.45;
+  }
+  50% {
+    background-position: 100% 0;
+    opacity: 0.9;
+  }
+  100% {
+    background-position: 0 0;
+    opacity: 0.45;
+  }
 }
 
 footer {
-  /* CHANGE: Footer matches dark theme */
-  font-size: 0.85rem;
-  padding: 2em 1em 3em;
+  margin: 4rem 0 3rem;
+  text-align: center;
   color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
 }
 
 footer a {
-  /* CHANGE: Footer link color */
-  color: #ffd54f;
+  color: var(--accent);
+}
+
+@media (max-width: 600px) {
+  .results-panel {
+    padding: 1.6rem 1.4rem;
+  }
 }

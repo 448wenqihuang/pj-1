@@ -10,25 +10,35 @@
 
 <body>
   <header>
-    <h1>Last.fm Top Tracks Explorer</h1> <!-- CHANGE: Replace Spotify heading -->
-    <p class="tagline">Discover what the world is listening to right now.</p> <!-- CHANGE: Add supporting tagline -->
-    <form id="tag-form"> <!-- CHANGE: Add tag search form -->
-      <label for="tag-input">Music tag</label>
-      <input id="tag-input" type="text" name="tag" aria-label="music tag" placeholder="e.g. pop, indie, hip-hop" value="pop" required>
-      <button type="submit">Load tracks</button>
-    </form>
+    <div class="header-inner">
+      <h1>Last.fm Top Tracks Explorer</h1>
+      <p class="tagline">Discover what the world is listening to right now.</p>
+      <form id="tag-form">
+        <label for="tag-input">Music tag</label>
+        <input id="tag-input" type="text" name="tag" aria-label="music tag" placeholder="e.g. pop, indie, hip-hop" value="pop" required>
+        <button type="submit">Load tracks</button>
+      </form>
+    </div>
   </header>
 
-  <main class="layout"> <!-- CHANGE: Introduce two-column layout -->
-    <aside id="trending" aria-label="Trending artist"> <!-- CHANGE: Sidebar for top artist -->
-      <section id="top-artist" aria-live="polite"></section> <!-- CHANGE: Placeholder for hottest artist -->
-      <section id="artist-tracks"> <!-- CHANGE: Top tracks list for the top artist -->
-        <h2>Top Tracks</h2>
-        <ol id="top-tracks" class="track-list" aria-live="polite"></ol>
-      </section>
-    </aside>
+  <main class="main-container">
+    <div class="content-grid">
+      <aside id="trending" aria-label="Trending artist">
+        <section id="top-artist" aria-live="polite"></section>
+        <section id="artist-tracks">
+          <h2>Top Tracks</h2>
+          <ol id="top-tracks" class="track-list" aria-live="polite"></ol>
+        </section>
+      </aside>
 
-    <section id="songs" aria-live="polite"></section> <!-- CHANGE: Main content container for tag tracks -->
+      <div class="results-panel">
+        <div class="results-header">
+          <h2>Trending tracks</h2>
+          <p>The freshest cuts for the tag you care about, straight from Last.fm.</p>
+        </div>
+        <section id="songs" aria-live="polite"></section>
+      </div>
+    </div>
   </main>
   
   <footer>

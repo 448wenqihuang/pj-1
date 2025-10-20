@@ -1,6 +1,7 @@
-﻿// CHANGE: Replace Spotify integration with Last.fm tag-based explorer
+// CHANGE: Replace Spotify integration with Last.fm tag-based explorer
 const API_KEY = "958653bf9d201a3a91283c3303fb5a9c"; // CHANGE: Insert your Last.fm API key
 const API_URL = "https://ws.audioscrobbler.com/2.0/"; // CHANGE: Base endpoint for Last.fm
+const DEFAULT_ARTWORK_URL = "https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png"; // CHANGE: Fallback cover art
 
 const form = document.querySelector('#tag-form');
 const tagInput = document.querySelector('#tag-input');
@@ -10,12 +11,17 @@ const artistTracksSection = document.querySelector('#artist-tracks'); // CHANGE:
 const topTracksList = document.querySelector('#top-tracks'); // CHANGE: Ordered list for artist top tracks
 const artistTracksHeading = artistTracksSection ? artistTracksSection.querySelector('h2') : null; // CHANGE: Heading for artist tracks
 
+const cache = new Map(); // CHANGE: Cache for fetched results
+const TRACK_LIMIT = 6; // CHANGE: Number of tracks to display per tag
+const wait = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
+
 
 // CHANGE: Pick the largest available image URL from a Last.fm image array
 function pickImage(imageList) {
-  if (!Array.isArray(imageList)) return '';
+  if (!Array.isArray(imageList)) return DEFAULT_ARTWORK_URL;
   const match = [...imageList].reverse().find((img) => img && img['#text']);
-  return match?.['#text'] || '';
+  const url = match?.['#text'];
+  return url && typeof url === 'string' && url.trim().length > 0 ? url : DEFAULT_ARTWORK_URL;
 }
 
 // CHANGE: Format listener/scrobble counts for display
@@ -33,11 +39,15 @@ function formatCount(rawValue) {
 // CHANGE: Show loading/errors inside the results section
 function renderStatus(message, type = 'info') {
   if (!songsSection) return;
+  songsSection.setAttribute('aria-busy', 'true');
   songsSection.innerHTML = '';
   const status = document.createElement('p');
   status.className = `status-message ${type}`;
   status.textContent = message;
   songsSection.appendChild(status);
+  if (type !== 'loading') {
+    songsSection.removeAttribute('aria-busy');
+  }
 }
 
 // CHANGE: Create a card for each track and inject into the page
@@ -47,23 +57,14 @@ function renderTracks(tracks = []) {
 
   tracks.forEach((track) => {
     const card = document.createElement('article');
-    card.className = 'track-card';
+    card.className = 'track-card fade-in';
 
     const imageUrl = track.displayImage || pickImage(track.image);
-
-    if (imageUrl) {
-      const img = document.createElement('img');
-      img.src = imageUrl;
-      img.alt = `${track.name} cover art`;
-      img.loading = 'lazy';
-      card.appendChild(img);
-    } else {
-      const placeholder = document.createElement('div');
-      placeholder.className = 'track-placeholder';
-      placeholder.setAttribute('aria-hidden', 'true');
-      placeholder.textContent = 'No art';
-      card.appendChild(placeholder);
-    }
+    const img = document.createElement('img');
+    img.src = imageUrl;
+    img.alt = `${track.name} cover art`;
+    img.loading = 'lazy';
+    card.appendChild(img);
 
     const info = document.createElement('div');
     info.className = 'track-info';
@@ -103,19 +104,25 @@ function renderTracks(tracks = []) {
     card.appendChild(info);
     songsSection.appendChild(card);
   });
+  songsSection.removeAttribute('aria-busy');
 }
 
 function renderTrendingStatus(message, type = 'info') {
   if (!topArtistSection) return;
+  topArtistSection.setAttribute('aria-busy', 'true');
   topArtistSection.innerHTML = '';
   const status = document.createElement('p');
   status.className = `status-message ${type}`;
   status.textContent = message;
   topArtistSection.appendChild(status);
+  if (type !== 'loading') {
+    topArtistSection.removeAttribute('aria-busy');
+  }
 }
 
 function renderTopTracksStatus(message, type = 'info') {
   if (!topTracksList) return;
+  topTracksList.setAttribute('aria-busy', 'true');
   topTracksList.innerHTML = '';
   const statusItem = document.createElement('li');
   statusItem.className = `track-status ${type}`;
@@ -123,28 +130,83 @@ function renderTopTracksStatus(message, type = 'info') {
   topTracksList.appendChild(statusItem);
 }
 
+function renderSongSkeletons(count = 6) {
+  if (!songsSection) return;
+  const status = songsSection.querySelector('.status-message');
+  songsSection.innerHTML = '';
+  if (status) {
+    songsSection.appendChild(status);
+  } else {
+    songsSection.setAttribute('aria-busy', 'true');
+  }
+  const fragment = document.createDocumentFragment();
+  for (let i = 0; i < count; i += 1) {
+    const skeleton = document.createElement('div');
+    skeleton.className = 'skeleton-card';
+    skeleton.innerHTML = `
+      <div class="skeleton-thumb"></div>
+      <div class="skeleton-line wide"></div>
+      <div class="skeleton-line"></div>
+      <div class="skeleton-line short"></div>
+    `;
+    fragment.appendChild(skeleton);
+  }
+  songsSection.appendChild(fragment);
+}
+
+function renderArtistSkeleton() {
+  if (!topArtistSection) return;
+  const skeleton = document.createElement('article');
+  skeleton.className = 'skeleton-artist';
+  skeleton.innerHTML = `
+    <div class="skeleton-thumb tall"></div>
+    <div class="skeleton-line wide"></div>
+    <div class="skeleton-line short"></div>
+  `;
+  topArtistSection.appendChild(skeleton);
+}
+
+function renderTrackListSkeleton(count = 5) {
+  if (!topTracksList) return;
+  const status = topTracksList.querySelector('.track-status');
+  topTracksList.innerHTML = '';
+  if (status) {
+    topTracksList.appendChild(status);
+  }
+  const fragment = document.createDocumentFragment();
+  for (let i = 0; i < count; i += 1) {
+    const row = document.createElement('li');
+    row.className = 'artist-track skeleton-row';
+
+    const badge = document.createElement('span');
+    badge.className = 'rank skeleton-badge';
+
+    const meta = document.createElement('div');
+    meta.className = 'artist-track-meta';
+    meta.innerHTML = `
+      <div class="skeleton-line wide"></div>
+      <div class="skeleton-line short"></div>
+    `;
+
+    row.append(badge, meta);
+    fragment.appendChild(row);
+  }
+  topTracksList.appendChild(fragment);
+}
+
 function renderTopArtistCard(artist) {
   if (!topArtistSection) return;
   topArtistSection.innerHTML = '';
 
   const card = document.createElement('article');
-  card.className = 'artist-card';
+  card.className = 'artist-card fade-in';
 
   const imageUrl = pickImage(artist.image);
-
-  if (imageUrl) {
-    const img = document.createElement('img');
-    img.src = imageUrl;
-    img.alt = `${artist.name} portrait`;
-    img.loading = 'lazy';
-    card.appendChild(img);
-  } else {
-    const placeholder = document.createElement('div');
-    placeholder.className = 'artist-placeholder';
-    placeholder.setAttribute('aria-hidden', 'true');
-    placeholder.textContent = 'No image';
-    card.appendChild(placeholder);
-  }
+  const img = document.createElement('img');
+  img.src = imageUrl;
+  img.alt = `${artist.name} portrait`;
+  img.loading = 'lazy';
+  card.appendChild(img);
 
   const info = document.createElement('div');
   info.className = 'artist-info';
@@ -174,6 +236,7 @@ function renderTopArtistCard(artist) {
   info.append(title, stats, link);
   card.appendChild(info);
   topArtistSection.appendChild(card);
+  topArtistSection.removeAttribute('aria-busy');
 
   if (artistTracksHeading) {
     artistTracksHeading.textContent = `Top Tracks - ${artist.name}`;
@@ -186,7 +249,7 @@ function renderArtistTopTracks(tracks = []) {
 
   tracks.forEach((track, index) => {
     const item = document.createElement('li');
-    item.className = 'artist-track';
+    item.className = 'artist-track fade-in';
 
     const rank = document.createElement('span');
     rank.className = 'rank';
@@ -215,18 +278,19 @@ function renderArtistTopTracks(tracks = []) {
     item.append(rank, meta);
     topTracksList.appendChild(item);
   });
+  topTracksList.removeAttribute('aria-busy');
 }
 
 async function fetchTrendingArtist() {
   if (!topArtistSection) return;
 
   renderTrendingStatus("Loading today's hottest artist...", 'loading');
-  if (topTracksList) {
-    topTracksList.innerHTML = '';
-  }
+  renderArtistSkeleton();
   if (artistTracksHeading) {
     artistTracksHeading.textContent = 'Top Tracks';
   }
+  renderTopTracksStatus('Loading top tracks...', 'loading');
+  renderTrackListSkeleton(5);
 
   try {
     const params = new URLSearchParams({
@@ -357,61 +421,90 @@ async function fetchTrackStats(track) {
   }
 }
 
-// CHANGE: Request top tracks for the given tag via Last.fm API
+// Request top tracks for the given tag via Last.fm API
 async function fetchTopTracks(tag) {
   if (!tag) {
     renderStatus('Please enter a music tag to search.', 'error');
     return;
   }
 
+  const cacheKey = `tag:${tag}:getTopTracks`;
+  const cached = cache.get(cacheKey);
+
+  if (cached) {
+    renderTracks(cached);
+    return;
+  }
+
   renderStatus(`Loading top tracks for "${tag}"...`, 'loading');
+  renderSongSkeletons(6);
 
   try {
-    const url = `${API_URL}?method=tag.gettoptracks&tag=${encodeURIComponent(tag)}&limit=12&api_key=${API_KEY}&format=json`;
+    const url = `${API_URL}?method=tag.gettoptracks&tag=${encodeURIComponent(tag)}&limit=${TRACK_LIMIT}&api_key=${API_KEY}&format=json`;
     const response = await fetch(url);
 
+    if (response.status === 429) {
+      const error = new Error('Rate limit');
+      error.status = 429;
+      throw error;
+    }
+
     if (!response.ok) {
-      throw new Error(`Network error: ${response.status}`);
+      const error = new Error(`Network error: ${response.status}`);
+      error.status = response.status;
+      throw error;
     }
 
     const data = await response.json();
 
     if (data.error) {
-      throw new Error(data.message || 'Last.fm returned an error.');
+      const apiError = new Error(data.message || 'Last.fm returned an error.');
+      if (data.error === 29 || String(data.message || '').includes('429')) {
+        apiError.status = 429;
+      }
+      throw apiError;
     }
 
-    const tracks = data.tracks?.track;
+    const rawTracks = data.tracks?.track;
+    const tracks = Array.isArray(rawTracks) ? rawTracks.slice(0, TRACK_LIMIT) : [];
 
-    if (!Array.isArray(tracks) || tracks.length === 0) {
+    if (tracks.length === 0) {
       renderStatus('No tracks found for that tag. Try another keyword.', 'error');
       return;
     }
 
-    const detailedResults = await Promise.allSettled(tracks.map(fetchTrackStats));
-    const enrichedTracks = tracks.map((track, index) => {
-      const result = detailedResults[index];
-      const baseImage = pickImage(track.image);
-      if (result.status === 'fulfilled' && result.value) {
-        const { listeners, playcount, imageUrl } = result.value;
-        return {
-          ...track,
-          listeners,
-          playcount,
-          displayImage: imageUrl || baseImage,
-        };
-      }
-      return {
-        ...track,
-        listeners: Number(track.listeners) || 0,
-        playcount: Number(track.playcount) || 0,
-        displayImage: baseImage,
-      };
-    });
+    const enrichedTracks = [];
 
+    for (let i = 0; i < tracks.length; i += 1) {
+      const track = tracks[i];
+      const baseImage = pickImage(track.image);
+      const detail = await fetchTrackStats(track);
+
+      const listeners = detail.listeners ?? (Number(track.listeners) || 0);
+      const playcount = detail.playcount ?? (Number(track.playcount) || 0); 
+
+      enrichedTracks.push({
+        ...track,
+        listeners,
+        playcount,
+        displayImage: detail.imageUrl || baseImage,
+      });
+
+      if (i < tracks.length - 1) {
+        await wait(180);
+      }
+    }
+
+    cache.set(cacheKey, enrichedTracks);
     renderTracks(enrichedTracks);
   } catch (error) {
     console.error('Error fetching Last.fm API:', error);
-    renderStatus('Unable to load tracks right now. Please try again later.', 'error');
+    const message = String(error?.message || '');
+    if ((error && error.status === 429) || message.includes('429')) {
+      renderStatus('Rate limit hit. Please retry in a moment.', 'error');
+    } else {
+      renderStatus('Unable to load tracks right now. Please try again later.', 'error');
+    }
   }
 }
 

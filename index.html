@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -38,6 +38,38 @@
         </div>
         <section id="songs" aria-live="polite"></section>
       </div>
+
+      <aside id="playlist-column" aria-label="Personal playlist">
+        <section id="playlist-panel" class="playlist-panel" aria-live="polite">
+          <div class="playlist-header">
+            <div>
+              <p class="eyebrow">MongoDB - Personal Playlist</p>
+              <h2 id="playlist-headline">Your playlist</h2>
+              <p class="playlist-copy">Pick a nickname, then click any track card to add it to your MongoDB playlist.</p>
+            </div>
+            <form id="playlist-form" class="inline-form">
+              <label for="playlist-name">Nickname</label>
+              <input id="playlist-name" name="owner" type="text" placeholder="e.g. alex" autocomplete="off" required>
+              <button type="submit">Switch / Create playlist</button>
+            </form>
+          </div>
+
+          <form id="manual-song-form" class="manual-song-form">
+            <div class="field-grid">
+              <input id="manual-title" name="title" type="text" placeholder="Song title" required>
+              <input id="manual-artist" name="artist" type="text" placeholder="Artist" required>
+              <input id="manual-tag" name="tag" type="text" placeholder="Tag / genre (optional)">
+              <input id="manual-url" name="url" type="url" placeholder="Song link (optional)">
+              <input id="manual-image" name="imageUrl" type="url" placeholder="Cover image URL (optional)">
+            </div>
+            <textarea id="manual-notes" name="notes" rows="2" placeholder="Notes (optional)"></textarea>
+            <button type="submit">Add manually</button>
+          </form>
+
+          <div id="playlist-status" class="playlist-status">Add a nickname, then click any track card to save.</div>
+          <ul id="playlist-list" class="playlist-list"></ul>
+        </section>
+      </aside>
     </div>
   </main>
   
@@ -46,3 +78,4 @@
   </footer>
 </body>
 </html>
+

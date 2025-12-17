@@ -1447,3 +1447,19 @@ body::after {
   background: rgba(255, 94, 118, 0.1) !important;
   color: #ffb3c1 !important;
 }
+
+
+/* Compact playlist items */
+.playlist-list { gap: 0.6rem !important; }
+.playlist-item {
+  grid-template-columns: auto 1fr auto !important;
+  gap: 0.6rem 0.5rem !important;
+  padding: 0.7rem 0.85rem !important;
+  border-radius: 14px !important;
+}
+.playlist-cover { width: 52px !important; height: 52px !important; }
+.playlist-meta h4 { font-size: 0.98rem !important; }
+.playlist-meta .artist { font-size: 0.88rem !important; }
+.playlist-meta .pill { padding: 0.18rem 0.5rem !important; font-size: 0.8rem !important; }
+.playlist-actions { gap: 0.25rem !important; }
+.playlist-actions .delete-btn { padding: 0.3rem 0.65rem !important; font-size: 0.85rem !important; }

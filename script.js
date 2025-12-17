@@ -558,7 +558,6 @@ function renderPlaylistTracks(tracks) {
             <div class="meta-line">${tag} ${notes} ${date ? `<span class="pill subtle">Saved on ${date}</span>` : ''}</div>
           </div>
           <div class="playlist-actions">
-            ${track.url ? `<a class="listen-link" href="${track.url}" target="_blank" rel="noopener">Open</a>` : ''}
             <button class="delete-btn" type="button">Remove</button>
           </div>
         </li>
